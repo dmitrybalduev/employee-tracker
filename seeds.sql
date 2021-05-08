@@ -4,9 +4,9 @@ INSERT INTO employees (first_name, last_name, role_id, manager_id )
 VALUES 
 ("Dmitry", "Balduev", 1, 2), 
 ("John", "Doe", 2, NULL), 
-("Albert", "Si", 3, 1)
-("Walter", "White", 4, 3)
-("Jesse", "Pinkman", 5, NULL);;
+("Albert", "Si", 3, 1),
+("Walter", "White", 4, 3),
+("Jesse", "Pinkman", 5, NULL );
 
 INSERT INTO departments(name)
 VALUES 

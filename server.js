@@ -91,9 +91,10 @@ function renderView(selection) {
 }
 
 function selectQuery(table){
-    let query = "SELECT * FROM ?";
-    connection.query(query, { tableName: table }, (err, res) => {
+    let query = "SELECT * FROM " + table;
+    connection.query(query, (err, res) => {
         if (err) throw err;
+        
         console.log(res);
       });
 }
@@ -107,8 +108,8 @@ function selectByQuery(by){
             by = "manager_id";
             break;
     }
-    let query = "SELECT * FROM employees GROUP BY ?";
-    connection.query(query, { by: by }, (err, res) => {
+    let query = "SELECT * FROM employees GROUP BY " + by;
+    connection.query(query, (err, res) => {
         if (err) throw err;
         console.log(res);
       });
