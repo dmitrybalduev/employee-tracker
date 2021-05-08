@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/dmitrybalduev/employee-tracker#readme",
   "dependencies": {
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1"
   }
 }
