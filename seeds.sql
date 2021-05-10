@@ -16,10 +16,10 @@ VALUES
 ("Support"),
 ("HR");
 
-INSERT INTO roles(title, salary, deparment_id)
+INSERT INTO roles(title, salary, department_id)
 VALUES
-("Full Stack Developer", 120000.13, 3),
-("HR manager", 70000.50, 5),
+("Full Stack Developer", 120000, 3),
+("HR manager", 70000, 5),
 ("Sales person", 80000, 1),
 ("Manager", 90000, 2),
 ("Accountant", 50000, 4);

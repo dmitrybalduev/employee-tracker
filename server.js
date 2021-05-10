@@ -1,5 +1,6 @@
 const inquirer = require("inquirer")
 const mysql = require("mysql");
+const consoleTable = require("console.table");
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -17,7 +18,6 @@ connection.connect((err) => {
 
 
 function start() {
-    console.log("///////////////////////////////////////////////////////////////////////////////////////")
 
     inquirer.prompt([
         {
@@ -27,14 +27,11 @@ function start() {
             choices: [
                 "View all employees",
                 "View all employees by department",
-                "View all employess by manager",
                 "Add employee",
                 "Remove employee",
                 "Update employee role",
-                "Update employee manager",
                 "View all roles",
                 "Add role",
-                "Remove role",
                 "View all departments",
                 "Add department",
                 "Exit"
@@ -68,7 +65,7 @@ function start() {
                     break;
                     
                 case "Exit":
-                    return;
+                    process.exit(-1);
             }
         })
 }
@@ -86,16 +83,24 @@ function renderView(selection) {
             selectByQuery(selection.split(" ")[4]);
             break;
     }
-    start();
+    // start();
     
 }
 
 function selectQuery(table){
     let query = "SELECT * FROM " + table;
+    if(table === "employees"){
+        query = `select e.id, e.first_name, e.last_name, r.title, r.salary
+        from employees e
+        join roles r on
+        e.role_id = r.id;`
+    }
     connection.query(query, (err, res) => {
         if (err) throw err;
         
-        console.log(res);
+        console.log();
+        console.table(res);
+        start();
       });
 }
 
@@ -104,16 +109,40 @@ function selectByQuery(by){
         case "department":
             by = "department_id";
             break;
-        case "manager":
+        case "roles":
             by = "manager_id";
             break;
     }
-    let query = "SELECT * FROM employees GROUP BY " + by;
+    viewByDepartment();
+}
+
+function viewByDepartment(){
+    let query = "SELECT name FROM departments";
     connection.query(query, (err, res) => {
         if (err) throw err;
-        console.log(res);
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "answer",
+                message: "Please choose one",
+                choices: res
+            }
+        ]).then(function (data){
+            const query2 = `select e.first_name, e.last_name, r.title, d.name AS department_name from employees e 
+            join roles r on 
+            e.role_id = r.id
+            join departments d on
+            r.department_id = d.id
+            WHERE d.name = '${data.answer}'`;
+            connection.query(query2, (err, res) => {
+                if (err) throw err;
+                console.log();
+                console.table(res);
+                start();
+              });
+        })
       });
-}
+}  ;
 
 function renderAdd(add) {
     add = add.split(" ")[1];
@@ -127,8 +156,6 @@ function renderAdd(add) {
         case "role":
             addRole()
             break;
-        case "return":
-            start();
     }
 }
 
@@ -147,6 +174,8 @@ function addDepartment() {
                 },
                 (err, res) => {
                   if (err) throw err;
+                  console.log("Added successfully!");
+                  start();
                 }
               );
         })
@@ -186,6 +215,8 @@ function addEmployee() {
                 },
                 (err, res) => {
                   if (err) throw err;
+                  console.log("Added successfully!");
+                  start();
                 }
               );
         })
@@ -213,12 +244,14 @@ function addRole() {
             const query = connection.query(
                 'INSERT INTO roles SET ?',
                 {
-                  title: data.name,
+                  title: data.title,
                   salary: data.salary,
                   department_id: data.department_id,
                 },
                 (err, res) => {
                   if (err) throw err;
+                  console.log("Added successfully!");
+                  start();
                 }
               );
         })
@@ -241,10 +274,7 @@ function renderUpdate(choice) {
         if (err) throw err;
         for(let i = 0; i < resEmp.length; i++){
             arrEmployees.push(resEmp[i].first_name + " " + resEmp[i].last_name);
-            console.log(resEmp[i].first_name + " " + resEmp[i].last_name);
         }
-        // console.log(arrEmployees);
-
         let arrRoles = [];
         let query2 = "SELECT title FROM roles";
         connection.query(query2, (err, res) => {
@@ -252,25 +282,9 @@ function renderUpdate(choice) {
             for(let i = 0; i < res.length; i++){
                 arrRoles.push(res[i].title);
             }
-            // console.log(arrRoles);
             updateEmployeeRole(arrEmployees, arrRoles);
           });
-        //   return arrRoles;
       });
-
-    // let arrEmployees = await getAllEmployees();
-    // let arrRoles = await getAllRoles();
-    
-    
-
-}
-
-async function getAllEmployees(){
-
-//      return arrEmployees;
-}
-
-async function getAllRoles(){
 
 }
 
@@ -303,11 +317,4 @@ async function getAllRoles(){
                 start();
             });
     });
-    // start();
 }
-
-/*
-UPDATE employees 
-SET role_id = (SELECT id FROM roles WHERE title = "HR MANAGER")
-WHERE first_name = "Dmitry" AND last_name = "Balduev";
-*/
