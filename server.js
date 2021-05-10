@@ -226,3 +226,88 @@ function addRole() {
 
 
 // ------------------------------
+function renderUpdate(choice) {
+    switch(choice){
+        case "Update employee role":
+            choice = "roles";
+            break;
+        case "Update employee manager":
+            break;
+    }
+
+    let arrEmployees = [];
+    let query = "SELECT first_name, last_name FROM employees";
+    connection.query(query, (err, resEmp) => {
+        if (err) throw err;
+        for(let i = 0; i < resEmp.length; i++){
+            arrEmployees.push(resEmp[i].first_name + " " + resEmp[i].last_name);
+            console.log(resEmp[i].first_name + " " + resEmp[i].last_name);
+        }
+        // console.log(arrEmployees);
+
+        let arrRoles = [];
+        let query2 = "SELECT title FROM roles";
+        connection.query(query2, (err, res) => {
+            if (err) throw err;
+            for(let i = 0; i < res.length; i++){
+                arrRoles.push(res[i].title);
+            }
+            // console.log(arrRoles);
+            updateEmployeeRole(arrEmployees, arrRoles);
+          });
+        //   return arrRoles;
+      });
+
+    // let arrEmployees = await getAllEmployees();
+    // let arrRoles = await getAllRoles();
+    
+    
+
+}
+
+async function getAllEmployees(){
+
+//      return arrEmployees;
+}
+
+async function getAllRoles(){
+
+}
+
+ function updateEmployeeRole(arrEmpl, arrAllRoles){
+    console.log(arrEmpl);
+    console.log(arrAllRoles);
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "empl",
+            message: "Please choose employee you'd like to update",
+            choices: arrEmpl,
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Please choose new role for employee",
+            choices: arrAllRoles,
+        }
+    ])
+    .then(function (data) {
+        let query = `UPDATE employees SET role_id = (SELECT id FROM roles WHERE ?) WHERE ? AND ?;`;
+        connection.query(query, 
+
+            [{title: data.role},
+            {first_name: data.empl.split(" ")[0]},
+            {last_name: data.empl.split(" ")[1]}], (err, res) => {
+                if (err) throw err;
+                console.log("Updated Successfully!");
+                start();
+            });
+    });
+    // start();
+}
+
+/*
+UPDATE employees 
+SET role_id = (SELECT id FROM roles WHERE title = "HR MANAGER")
+WHERE first_name = "Dmitry" AND last_name = "Balduev";
+*/
