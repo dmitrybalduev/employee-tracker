@@ -58,8 +58,7 @@ function start() {
                     break;
 
                 case "Update employee role":
-                case "Update employee manager":
-                    renderUpdate(data.answer);
+                    renderUpdate();
                     break;
                     
                 case "Exit":
@@ -241,14 +240,7 @@ function addRole() {
 }
 
 
-function renderUpdate(choice) {
-    switch(choice){
-        case "Update employee role":
-            choice = "roles";
-            break;
-        case "Update employee manager":
-            break;
-    }
+function renderUpdate() {
 
     let arrEmployees = [];
     let query = "SELECT first_name, last_name FROM employees";
@@ -271,8 +263,6 @@ function renderUpdate(choice) {
 }
 
  function updateEmployeeRole(arrEmpl, arrAllRoles){
-    console.log(arrEmpl);
-    console.log(arrAllRoles);
     inquirer.prompt([
         {
             type: "list",
