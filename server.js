@@ -18,7 +18,6 @@ connection.connect((err) => {
 
 
 function start() {
-
     inquirer.prompt([
         {
             type: "list",
@@ -79,12 +78,9 @@ function renderView(selection) {
             selectQuery(selection.split(" ")[2]);
             break;
         case "View all employees by department":
-        case "View all employess by manager":
-            selectByQuery(selection.split(" ")[4]);
+            viewByDepartment();
             break;
-    }
-    // start();
-    
+    }    
 }
 
 function selectQuery(table){
@@ -102,18 +98,6 @@ function selectQuery(table){
         console.table(res);
         start();
       });
-}
-
-function selectByQuery(by){
-    switch(by){
-        case "department":
-            by = "department_id";
-            break;
-        case "roles":
-            by = "manager_id";
-            break;
-    }
-    viewByDepartment();
 }
 
 function viewByDepartment(){
@@ -142,7 +126,7 @@ function viewByDepartment(){
               });
         })
       });
-}  ;
+};
 
 function renderAdd(add) {
     add = add.split(" ")[1];
@@ -258,7 +242,6 @@ function addRole() {
 }
 
 
-// ------------------------------
 function renderUpdate(choice) {
     switch(choice){
         case "Update employee role":
