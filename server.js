@@ -27,7 +27,6 @@ function start() {
                 "View all employees",
                 "View all employees by department",
                 "Add employee",
-                "Remove employee",
                 "Update employee role",
                 "View all roles",
                 "Add role",
