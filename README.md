@@ -17,5 +17,5 @@ Follow these steps:
 3. To start application run "node server.js" 
 
 ## Screenshots
-![Application](./screenshot.PNG)
+![Application](./screenshot.png)
 
